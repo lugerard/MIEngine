@@ -226,6 +226,7 @@ namespace Microsoft.MIDebugEngine.Natvis
         private static Regex s_variableName = new Regex("[a-zA-Z$_][a-zA-Z$_0-9]*");
         private static Regex s_subfieldNameHere = new Regex(@"\G((\.|->)[a-zA-Z$_][a-zA-Z$_0-9]*)+");
         private static Regex s_expression = new Regex(@"^\{[^\}]*\}");
+        private static readonly Regex s_dllQualifiedPrefix = new Regex(@"\w+(\.\w+)*\.dll!");
         private List<FileInfo> _typeVisualizers;
         private DebuggedProcess _process;
         private HostConfigurationStore _configStore;
@@ -1392,6 +1393,10 @@ namespace Microsoft.MIDebugEngine.Natvis
 
         private string ReplaceNamesInExpression(string expression, IVariableInformation variable, IDictionary<string, string> scopedNames)
         {
+            // Strip Windows dll!-qualified type prefixes (e.g. Qt6Cored.dll!)
+            // for GDB/LLDB compatibility — meaningless outside Windows
+            expression = s_dllQualifiedPrefix.Replace(expression, "");
+
             return ProcessNamesInString(expression, new Substitute[] {
                 (m)=>
                     {
