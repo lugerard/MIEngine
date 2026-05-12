@@ -207,7 +207,7 @@ namespace Microsoft.MIDebugEngine.Natvis
             /// Stored as IntrinsicType so that Parameter[] is available at call time
             /// for argument substitution in parametrized intrinsics.
             /// </summary>
-            public Dictionary<string, IntrinsicType> Intrinsics { get; private set; }
+            public Dictionary<string, IntrinsicType> Intrinsics { get; }
 
             public VisualizerId[] GetUIVisualizers()
             {
@@ -245,8 +245,8 @@ namespace Microsoft.MIDebugEngine.Natvis
         private static Regex s_variableName = new Regex("[a-zA-Z$_][a-zA-Z$_0-9]*");
         private static Regex s_subfieldNameHere = new Regex(@"\G((\.|->)[a-zA-Z$_][a-zA-Z$_0-9]*)+");
         private static Regex s_expression = new Regex(@"^\{[^\}]*\}");
-        private static readonly Regex s_dllQualifiedPrefix = new Regex(@"\w+(\.\w+)*\.dll!");
-        private static readonly Regex s_intrinsicCallPattern = new Regex(@"\b([A-Za-z_]\w*)\s*\(");
+        private static readonly Regex s_moduleQualifiedPrefix = new Regex(@"\w+(?:\.\w+)*\.(?:dll|exe)!", RegexOptions.IgnoreCase);
+        private static readonly Regex s_intrinsicCallPattern = new Regex(@"\b(\w+)\s*\(");
         private List<FileInfo> _typeVisualizers;
         private DebuggedProcess _process;
         private HostConfigurationStore _configStore;
@@ -1464,7 +1464,7 @@ namespace Microsoft.MIDebugEngine.Natvis
         /// values.  Each parameter name is replaced as a whole word so that e.g. "val" inside
         /// "interval" is not touched.
         /// </summary>
-        internal static string SubstituteIntrinsicParameters(string body, ParameterType[] parameters, List<string> args)
+        internal static string SubstituteIntrinsicParameters(string body, IntrinsicParameterType[] parameters, List<string> args)
         {
             if (parameters == null || parameters.Length == 0)
                 return body;
@@ -1576,7 +1576,7 @@ namespace Microsoft.MIDebugEngine.Natvis
         {
             // Strip Windows dll!-qualified type prefixes (e.g. Qt6Cored.dll!)
             // for GDB/LLDB compatibility — meaningless outside Windows
-            expression = s_dllQualifiedPrefix.Replace(expression, "");
+            expression = s_moduleQualifiedPrefix.Replace(expression, "");
 
             // Expand intrinsic calls (e.g. day(), memberOffset(3)) into plain C++ expressions
             expression = ResolveIntrinsicCalls(expression, intrinsics);

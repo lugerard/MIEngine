@@ -1829,7 +1829,7 @@ namespace Microsoft.MIDebugEngine.Natvis {
     /// </summary>
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://schemas.microsoft.com/vstudio/debugger/natvis/2010")]
-    public partial class ParameterType {
+    public partial class IntrinsicParameterType {
 
         private string nameField;
         private string typeField;
@@ -1864,7 +1864,7 @@ namespace Microsoft.MIDebugEngine.Natvis {
         private bool optionalFieldSpecified;
         private string categoryField;
         private string moduleNameField;
-        private ParameterType[] parameterField;
+        private IntrinsicParameterType[] parameterField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -1910,7 +1910,7 @@ namespace Microsoft.MIDebugEngine.Natvis {
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Parameter")]
-        public ParameterType[] Parameter {
+        public IntrinsicParameterType[] Parameter {
             get { return this.parameterField; }
             set { this.parameterField = value; }
         }
