@@ -20,10 +20,10 @@ namespace MIDebugEngineUnitTests
             intrinsic.Expression = expression;
             if (parameters.Length > 0)
             {
-                var ps = new ParameterType[parameters.Length];
+                var ps = new IntrinsicParameterType[parameters.Length];
                 for (int i = 0; i < parameters.Length; i++)
                 {
-                    ps[i] = new ParameterType();
+                    ps[i] = new IntrinsicParameterType();
                     ps[i].Name = parameters[i].name;
                     ps[i].Type = parameters[i].type;
                 }
@@ -125,7 +125,7 @@ namespace MIDebugEngineUnitTests
         [Fact]
         public void SubstituteIntrinsicParameters_SingleParam()
         {
-            var ps = new[] { new ParameterType { Name = "count", Type = "int" } };
+            var ps = new[] { new IntrinsicParameterType { Name = "count", Type = "int" } };
             string result = Natvis.SubstituteIntrinsicParameters("sizeof(int) * count", ps, new List<string> { "3" });
             Assert.Equal("sizeof(int) * 3", result);
         }
@@ -134,7 +134,7 @@ namespace MIDebugEngineUnitTests
         public void SubstituteIntrinsicParameters_WholeWordOnly()
         {
             // "val" should not be replaced inside "interval"
-            var ps = new[] { new ParameterType { Name = "val", Type = "int" } };
+            var ps = new[] { new IntrinsicParameterType { Name = "val", Type = "int" } };
             string result = Natvis.SubstituteIntrinsicParameters("interval + val", ps, new List<string> { "99" });
             Assert.Equal("interval + 99", result);
         }
@@ -144,8 +144,8 @@ namespace MIDebugEngineUnitTests
         {
             var ps = new[]
             {
-                new ParameterType { Name = "a", Type = "int" },
-                new ParameterType { Name = "b", Type = "int" }
+                new IntrinsicParameterType { Name = "a", Type = "int" },
+                new IntrinsicParameterType { Name = "b", Type = "int" }
             };
             string result = Natvis.SubstituteIntrinsicParameters("a + b", ps, new List<string> { "1", "2" });
             Assert.Equal("1 + 2", result);
